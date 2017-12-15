@@ -1,23 +1,52 @@
-function New-PSProject{
+<#
+    .SYNOPSIS
+    Creates Project folder named $Name at $Path
 
+    .DESCRIPTION
+    Creates starter module/manifest/README files and Public/Private folders
+
+    .EXAMPLE
+    New-PSProject -Name Get-DataDomainSpace -Path .\Desktop
+
+    Creates a folder on the Desktop named Get-DataDomainSpace. Creates Public/Private folders, manifest/module/README files
+
+    .PARAMETER Name
+    Name of the project/module to create.
+
+    .PARAMETER Path
+    Path to where you want the project to be created (can be relative). Defaults to current working directory.
+    
+    .OUTPUTS
+    True/False
+
+    .NOTES
+    Thanks/Credit to RamblingCookieMonster, specifically http://ramblingcookiemonster.github.io/Building-A-PowerShell-Module/
+
+    .LINK
+    https://github.com/VNerdIO/New-PSProject
+#>
+function New-PSProject{
+    [CmdletBinding()]
     param([Parameter(Mandatory=$true)]
           [string]$Name,
           [string]$Path)
 
-    Try{
+    begin{}
+    process{
+        try{
 
-        if(-not($Path)){ $Path = ".\" }
+            if(-not($Path)){ $Path = ".\" }
 
-        $version = "1.0.0"
-        $now = Get-Date -Format "yyyy-MM-ddTH:mm:ss"
-        $year = Get-Date -Format "yyyy"
-        $guid = (New-Guid).Guid
+            $version = "1.0.0"
+            $now = Get-Date -Format "yyyy-MM-ddTH:mm:ss"
+            $year = Get-Date -Format "yyyy"
+            $guid = (New-Guid).Guid
 
-        $n = New-Item "$Path\$Name" -type directory
-        $n = New-Item "$Path\$Name\Private" -type directory
-        $n = New-Item "$Path\$Name\Public" -type directory
-        $n = New-Item "$Path\$Name\$Name.psd1"
-        $n = New-Item "$Path\$Name\$Name.psm1"
+            $n = New-Item "$Path\$Name" -type directory
+            $n = New-Item "$Path\$Name\Private" -type directory
+            $n = New-Item "$Path\$Name\Public" -type directory
+            $n = New-Item "$Path\$Name\$Name.psd1"
+            $n = New-Item "$Path\$Name\$Name.psm1"
 
 $psd = @"
 #
@@ -167,9 +196,14 @@ Foreach(`$import in @(`$Public + `$Private))
 Export-ModuleMember -Function `$Public.Basename
 "@
 
-        $psd | Out-File -Encoding Ascii "$Path\$name\$Name.psd1"
-        $psm | Out-File -Encoding Ascii "$Path\$name\$Name.psm1"
-        "# $Name" | Out-File "$Path\$Name\README.md"
+    $psd | Out-File -Encoding Ascii "$Path\$name\$Name.psd1"
+    $psm | Out-File -Encoding Ascii "$Path\$name\$Name.psm1"
+    "# $Name" | Out-File "$Path\$Name\README.md"
+
+    Write-Output $true
+        }
+        catch{ Write-Output $false}
+        finally{}
     }
-    Catch{}
+    end{}
 }
