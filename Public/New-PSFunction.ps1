@@ -61,7 +61,6 @@ $FunctionTemplate=@"
 Function $Name{
 	[CmdletBinding()]
 	Param([Parameter(Mandatory=`$true)]
-		  [PSCredential]
 		  `$Credential)
 	
 	begin{}
