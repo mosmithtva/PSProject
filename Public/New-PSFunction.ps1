@@ -66,7 +66,13 @@ Function $Name{
 	begin{}
 	process{
 		try{}
-		catch{}
+		catch{
+			`$ErrorMessage = `$_.Exception.Message
+			`$FailedItem = `$_.Exception.ItemName
+			
+			Write-Output "`$FailedItem - `$ErrorMessage"
+			Write-Output $False
+		}
 		finally{}
 	}
 	end{}
