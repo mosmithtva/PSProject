@@ -61,7 +61,7 @@ $FunctionTemplate=@"
 Function $Name{
 	[CmdletBinding()]
 	Param([Parameter(Mandatory=`$true)]
-		  `$Connection)
+		  `$Name)
 	
 	begin{}
 	process{
@@ -81,7 +81,13 @@ Function $Name{
 
 			$FunctionTemplate | Out-File -Encoding Ascii "$Path\$name.ps1"
 		}
-		catch{}
+		catch{
+			$ErrorMessage = $_.Exception.Message
+			$FailedItem = $_.Exception.ItemName
+			$Line = $_.InvocationInfo.ScriptLineNumber
+			$Function = $MyInvocation.MyCommand
+			$Message = "[ERROR  in $Function on line $Line] $FailedItem - $ErrorMessage"
+		}
 		finally{}
 	}
 	end{}
